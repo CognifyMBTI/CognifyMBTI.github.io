@@ -3,35 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDB-Style Cognitive Analysis Test</title>
-    
+    <title>Cognitive Analyst Test | Final Version</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #111827; color: #f3f4f6; }
-        .gradient-text { background: linear-gradient(to right, #10b981, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .card { background-color: rgba(31, 41, 55, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .btn-primary { background: linear-gradient(to right, #10b981, #2563eb); transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4); }
-        .option-btn { background-color: #374151; border: 1px solid #4b5563; transition: background-color 0.3s, border-color 0.3s; text-align: left; padding: 1rem; }
-        .option-btn:hover { background-color: #4b5563; border-color: #6b7280; }
-        .scenario-box { background-color: rgba(17, 24, 39, 0.7); border-left: 4px solid #10b981; padding: 1rem; }
-        .form-input { background-color: #1f2937; border: 1px solid #4b5563; color: #f3f4f6; border-radius: 0.5rem; padding: 0.75rem 1rem; transition: border-color 0.3s, box-shadow 0.3s; }
-        .form-input:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3); }
+        body { font-family: 'Inter', sans-serif; background-color: #0d1117; color: #e6edf3; }
+        .gradient-text { background: linear-gradient(to right, #2dd4bf, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .card { 
+            background-color: rgba(22, 27, 34, 0.8); 
+            backdrop-filter: blur(12px); 
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            /* NEW: Smooth transition for fade effect */
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+            opacity: 1;
+        }
+        /* NEW: Class for hiding screens with fade effect */
+        .fade-out { opacity: 0; transform: translateY(10px); pointer-events: none; }
+        .hidden { display: none; }
+
+        .btn-primary { background: linear-gradient(to right, #14b8a6, #2563eb); transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(20, 184, 166, 0.2); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(20, 184, 166, 0.3); }
+        .option-btn { background-color: #21262d; border: 1px solid #30363d; transition: all 0.2s; text-align: left; padding: 1rem; border-radius: 0.5rem; }
+        .option-btn:hover { background-color: #30363d; border-color: #4b5563; transform: translateY(-1px); }
+        
+        /* NEW: Style for the selected answer */
+        .option-btn.selected {
+            background-color: rgba(20, 184, 166, 0.2);
+            border-color: #14b8a6;
+            animation: glow 0.5s ease-out;
+        }
+        @keyframes glow {
+            from { box-shadow: 0 0 0px #14b8a6; }
+            to { box-shadow: 0 0 10px #14b8a6; }
+        }
+
+        .scenario-box { background-color: #0d1117; border-left: 4px solid #14b8a6; padding: 1.25rem; border-radius: 0.5rem; }
+        .form-input, .form-select { background-color: #161b22; border: 1px solid #30363d; color: #e6edf3; border-radius: 0.5rem; padding: 0.75rem 1rem; transition: border-color 0.3s, box-shadow 0.3s; -webkit-appearance: none; -moz-appearance: none; appearance: none; }
+        .form-input:focus, .form-select:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3); }
+        
         /* Custom Slider */
         input[type=range] { -webkit-appearance: none; background: transparent; }
         input[type=range]:focus { outline: none; }
-        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; cursor: pointer; background: #4b5563; border-radius: 5px; }
-        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #10b981; cursor: pointer; margin-top: -6px; }
-        input[type=range]::-moz-range-track { width: 100%; height: 8px; cursor: pointer; background: #4b5563; border-radius: 5px; }
-        input[type=range]::-moz-range-thumb { height: 20px; width: 20px; border-radius: 50%; background: #10b981; cursor: pointer; }
-        /* Custom Toggle Switch */
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; cursor: pointer; background: #30363d; border-radius: 5px; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #14b8a6; cursor: pointer; margin-top: -6px; }
+        
+        /* Custom Toggle */
         .toggle-bg:after { content: ''; position: absolute; top: 2px; left: 2px; background: white; border-radius: 9999px; height: 1.25rem; width: 1.25rem; transition: transform 0.3s; }
         input:checked + .toggle-bg:after { transform: translateX(100%); }
-        input:checked + .toggle-bg { background-color: #10b981; }
+        input:checked + .toggle-bg { background-color: #14b8a6; }
+        
+        .progress-glow { box-shadow: 0 0 10px rgba(20, 184, 166, 0.5); }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4">
@@ -41,300 +67,481 @@
         <!-- Welcome Screen -->
         <div id="welcome-screen" class="text-center card rounded-2xl p-8 md:p-12">
             <h1 class="text-4xl md:text-5xl font-extrabold mb-4">The <span class="gradient-text">Cognitive Analyst</span> Test</h1>
-            <p class="text-gray-300 mb-8 text-lg">Instead of asking what you do, we ask *how you think*. Analyze a series of scenarios and choose the reasoning that makes the most sense to you. This reveals your true cognitive framework.</p>
+            <p class="text-gray-400 mb-8 text-lg">Discover your cognitive framework through scenario-based analysis. This improved version ensures balanced testing of all 8 cognitive functions for accurate results.</p>
             
             <div class="space-y-6 text-left max-w-sm mx-auto mb-10">
-                <!-- Test Length Slider -->
                 <div>
                     <div class="flex justify-between items-center mb-1">
                         <label for="test-length-slider" class="font-semibold text-lg">Test Length:</label>
-                        <span id="test-length-label" class="font-bold text-white text-lg">20 Questions</span>
+                        <span id="test-length-label" class="font-bold text-white text-lg">24 Questions</span>
                     </div>
-                     <p class="text-sm text-gray-400 mb-2">Estimated time: <span id="estimated-time">~12 min</span></p>
-                    <input type="range" id="test-length-slider" min="10" max="40" step="5" value="20" class="w-full">
-                    <p class="text-xs text-gray-500 mt-2">More questions lead to a more accurate result.</p>
+                    <p class="text-sm text-gray-500 mb-2">Estimated time: <span id="estimated-time">~14 min</span></p>
+                    <input type="range" id="test-length-slider" min="16" max="32" step="8" value="24" class="w-full" aria-label="Select test length">
+                    <p class="text-xs text-gray-600 mt-2">Each length ensures perfect balance across all cognitive functions.</p>
                 </div>
-                <!-- Hide Functions Toggle -->
+                
                 <div class="flex items-center justify-between">
-                    <label for="hide-functions-toggle" class="font-semibold text-lg">Expert Mode:</label>
+                    <label class="font-semibold text-lg">Expert Mode:</label>
                     <div class="flex items-center space-x-3">
-                        <span id="toggle-label-off" class="text-gray-400">Show Functions</span>
+                        <span id="toggle-label-off" class="text-gray-500">Show Functions</span>
                         <label for="hide-functions-toggle" class="flex items-center cursor-pointer">
                             <input type="checkbox" id="hide-functions-toggle" class="sr-only" checked>
-                            <div class="toggle-bg relative w-10 h-6 bg-gray-700 rounded-full"></div>
+                            <div class="toggle-bg relative w-10 h-6 bg-gray-600 rounded-full" aria-hidden="true"></div>
                         </label>
                         <span id="toggle-label-on" class="font-bold text-white opacity-50">Hide Functions</span>
                     </div>
                 </div>
             </div>
-
             <button id="start-btn" class="btn-primary text-white font-bold py-3 px-8 rounded-full text-xl">Begin Analysis</button>
+             <button id="resume-btn" class="hidden mt-4 bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-full transition-colors">Resume Previous Test</button>
         </div>
 
         <!-- Question Screen -->
         <div id="question-screen" class="hidden card rounded-2xl p-8 md:p-12">
             <div class="mb-6">
-                <div id="progress-bar" class="w-full bg-gray-700 rounded-full h-2.5 mt-2">
-                    <div id="progress" class="bg-indigo-600 h-2.5 rounded-full" style="width: 0%"></div>
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm text-gray-500">Progress</span>
+                    <span id="question-counter" class="text-sm text-gray-500">1 of 24</span>
+                </div>
+                <div id="progress-bar" class="w-full bg-gray-700 rounded-full h-2.5">
+                    <div id="progress" class="bg-gradient-to-r from-teal-500 to-blue-500 h-2.5 rounded-full progress-glow transition-all duration-300" style="width: 0%"></div>
                 </div>
             </div>
+            
             <div class="mb-6">
-                <h3 class="font-semibold text-gray-400 text-sm uppercase tracking-wider mb-2">Scenario</h3>
-                <p id="scenario-text" class="scenario-box rounded-lg text-lg"></p>
+                <h3 class="font-semibold text-gray-500 text-sm uppercase tracking-wider mb-2">Scenario</h3>
+                <p id="scenario-text" class="scenario-box text-lg leading-relaxed"></p>
             </div>
-            <h2 class="text-xl font-bold mb-4">Which analysis do you agree with more?</h2>
+            
+            <h2 class="text-xl font-bold mb-4">Which approach resonates more with you?</h2>
             <div id="options-container" class="grid grid-cols-1 gap-4"></div>
         </div>
 
         <!-- Character Input Screen -->
         <div id="character-input-screen" class="hidden card rounded-2xl p-8 md:p-12">
-            <h2 class="text-3xl font-bold text-center mb-2">Final Step: Your Inspirations</h2>
-            <p class="text-gray-400 text-center mb-8">This information adds a crucial layer to your paid report, allowing for a deeper, more personalized analysis.</p>
+            <h2 class="text-3xl font-bold text-center mb-2">Final Step: Personal Context</h2>
+            <p class="text-gray-400 text-center mb-8">These details help create a more personalized analysis in your detailed report.</p>
+            
             <div class="space-y-6">
                 <div>
-                    <label for="fav-char" class="block text-md font-semibold mb-2 text-gray-200">Who is your favorite fictional character?</label>
-                    <input type="text" id="fav-char" class="form-input w-full" placeholder="e.g., Katniss Everdeen (The Hunger Games)">
+                    <label for="fav-char" class="block text-md font-semibold mb-2 text-gray-300">Favorite fictional character (optional):</label>
+                    <input type="text" id="fav-char" class="form-input w-full" placeholder="e.g., Hermione Granger, Iron Man, etc.">
                 </div>
                 <div>
-                    <label for="rel-char" class="block text-md font-semibold mb-2 text-gray-200">Which character is most relatable to you?</label>
-                    <input type="text" id="rel-char" class="form-input w-full" placeholder="e.g., Spider-Man (Marvel)">
+                    <label for="rel-char" class="block text-md font-semibold mb-2 text-gray-300">Most relatable character (optional):</label>
+                    <input type="text" id="rel-char" class="form-input w-full" placeholder="e.g., Peter Parker, Elizabeth Bennet, etc.">
                 </div>
             </div>
-            <button id="get-results-btn" class="btn-primary text-white font-bold py-3 px-8 rounded-full text-xl w-full mt-10">See My Type</button>
+            
+            <button id="get-results-btn" class="btn-primary text-white font-bold py-3 px-8 rounded-full text-xl w-full mt-8">See My Cognitive Profile</button>
         </div>
 
         <!-- Result Screen -->
-        <div id="result-screen" class="hidden text-center card rounded-2xl p-8 md:p-12">
-            <h2 class="text-2xl font-bold text-gray-300 mb-2">Your Cognitive Profile Suggests:</h2>
-            <p id="mbti-type" class="text-6xl md:text-7xl font-extrabold gradient-text mb-4"></p>
-            <p id="mbti-title" class="text-2xl font-bold text-white mb-4"></p>
-            <p id="mbti-justification" class="text-gray-300 mb-8 italic"></p>
-            <div class="bg-gray-900/50 p-6 rounded-lg border border-indigo-500/30">
-                <h3 class="text-xl font-bold text-white mb-3">Get Your Full, Detailed Report</h3>
-                <p class="text-gray-300 mb-2">Receive a comprehensive analysis of your cognitive functions, career paths, and how your character choices connect to your profile.</p>
-                <p class="text-2xl font-extrabold text-white my-4">$10 USD</p>
-                <a id="get-detailed-report-btn" href="#" target="_blank" rel="noopener noreferrer" class="btn-primary inline-block text-white font-bold py-3 px-8 rounded-full text-lg w-full">
-                    Proceed to Secure Form
-                </a>
-                <p class="text-xs text-gray-500 mt-3">You will be directed to a Google Form to provide your details. I will then contact you for payment and delivery of your report.</p>
+        <div id="result-screen" class="hidden card rounded-2xl p-8 md:p-12">
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-bold text-gray-400 mb-2">Your Cognitive Profile:</h2>
+                <p id="mbti-type" class="text-6xl md:text-7xl font-extrabold gradient-text mb-4"></p>
+                <p id="mbti-title" class="text-2xl font-bold text-white mb-4"></p>
+                
+                <div class="bg-gray-900/50 rounded-lg p-4 mb-6 max-w-xs mx-auto">
+                    <p class="text-sm text-gray-500 mb-1">Result Confidence</p>
+                    <div class="flex items-center justify-center space-x-2">
+                        <div class="w-32 bg-gray-700 rounded-full h-2">
+                            <div id="confidence-bar" class="bg-gradient-to-r from-teal-500 to-blue-500 h-2 rounded-full"></div>
+                        </div>
+                        <span id="confidence-text" class="text-sm font-bold text-white"></span>
+                    </div>
+                </div>
             </div>
-            <button id="restart-btn" class="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-full text-md w-full mt-6 transition-colors">Start Over</button>
+            
+            <div class="mb-8">
+                <h3 class="text-xl font-bold text-center mb-4">Your Cognitive Function Alignment</h3>
+                <canvas id="resultChart" class="bg-gray-900/30 rounded-lg p-4"></canvas>
+            </div>
+            
+            <div class="bg-gray-900/50 rounded-lg p-6 mb-8">
+                <h3 class="text-lg font-bold text-white mb-4 text-center">Your Cognitive Function Scores</h3>
+                <div id="function-scores" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
+            </div>
+
+            <div class="bg-gradient-to-br from-teal-900/30 to-blue-900/30 border border-teal-500/30 p-6 rounded-lg mb-6 text-center">
+                <h3 class="text-xl font-bold text-white mb-3">📊 Get Your Comprehensive Report</h3>
+                <p class="text-gray-300 mb-4">Receive an in-depth 15-page analysis including career paths, relationship insights, growth strategies, and more.</p>
+                <p class="text-3xl font-extrabold text-white mb-4">$12 USD</p>
+                <a id="get-detailed-report-btn" href="#" target="_blank" rel="noopener noreferrer" class="btn-primary inline-block text-white font-bold py-3 px-8 rounded-full text-lg w-full max-w-xs mx-auto">
+                    Get Detailed Analysis
+                </a>
+                <p class="text-xs text-gray-600 mt-3">Secure Google Form • Payment via PayPal/Stripe • Delivered within 24 hours</p>
+            </div>
+            
+            <div class="flex space-x-3">
+                <button id="restart-btn" class="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-full flex-1 transition-colors">Take Again</button>
+                <button id="share-btn" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-6 rounded-full flex-1 transition-colors">Share Results</button>
+            </div>
         </div>
     </div>
 
-    <script>
-        // --- DATA ---
-        const mbtiInfo = {
-            ISTJ: { title: "The Inspector" }, ISFJ: { title: "The Protector" }, INFJ: { title: "The Advocate" }, INTJ: { title: "The Architect" },
-            ISTP: { title: "The Virtuoso" }, ISFP: { title: "The Adventurer" }, INFP: { title: "The Mediator" }, INTP: { title: "The Logician" },
-            ESTP: { title: "The Entrepreneur" }, ESFP: { title: "The Entertainer" }, ENFP: { title: "The Campaigner" }, ENTP: { title: "The Debater" },
-            ESTJ: { title: "The Executive" }, ESFJ: { title: "The Consul" }, ENFJ: { title: "The Protagonist" }, ENTJ: { title: "The Commander" }
-        };
+    <!-- NEW: Toast notification for sharing -->
+    <div id="toast" class="fixed bottom-10 right-10 bg-green-500 text-white py-2 px-4 rounded-lg shadow-lg transition-opacity duration-300 opacity-0">
+        Results copied to clipboard!
+    </div>
 
-        const allQuestions = [
-            // Questions now have a 'cleanText' property for Expert Mode
-            { scenario: "An artist spends years perfecting a single painting, meticulously ensuring every brushstroke aligns with their initial, deeply-felt vision for the piece.", options: [ { text: "This is Introverted Feeling (Fi) driving the process. The art is a pure expression of their unique inner values and identity, and they won't compromise that vision.", cleanText: "The art is a pure expression of their unique inner values and identity, and they won't compromise that vision.", value: "Fi" }, { text: "This demonstrates Introverted Intuition (Ni). They have a single, complex, abstract vision of the final product and are working relentlessly to bring that specific future concept into reality.", cleanText: "They have a single, complex, abstract vision of the final product and are working relentlessly to bring that specific future concept into reality.", value: "Ni" } ] },
-            { scenario: "When a friend comes to them with a problem, a person immediately starts brainstorming a dozen creative, unconventional solutions and possibilities.", options: [ { text: "Clear Extraverted Intuition (Ne). They are energized by exploring multiple future possibilities and generating novel ideas to solve the problem, rather than focusing on just one path.", cleanText: "They are energized by exploring multiple future possibilities and generating novel ideas to solve the problem, rather than focusing on just one path.", value: "Ne" }, { text: "This is Extraverted Feeling (Fe) in action. They are trying to restore social harmony by actively providing help and showing they care by offering a wide range of supportive suggestions.", cleanText: "They are trying to restore social harmony by actively providing help and showing they care by offering a wide range of supportive suggestions.", value: "Fe" } ] },
-            { scenario: "A detective arrives at a crime scene. Instead of theorizing, they immediately start touching objects, checking temperatures, and noting specific, concrete details about the physical environment.", options: [ { text: "This is a hallmark of Extraverted Sensing (Se). They are fully engaged with the present-moment reality, gathering real-time, tangible data from their surroundings to understand the situation.", cleanText: "They are fully engaged with the present-moment reality, gathering real-time, tangible data from their surroundings to understand the situation.", value: "Se" }, { text: "This is Introverted Sensing (Si) at work. They are systematically collecting detailed facts to compare against a vast mental library of past cases, looking for familiar patterns.", cleanText: "They are systematically collecting detailed facts to compare against a vast mental library of past cases, looking for familiar patterns.", value: "Si" } ] },
-            { scenario: "A CEO is presented with a new business strategy. Her primary focus is on whether the plan is logically consistent, efficient, and has a clear, measurable path to profit.", options: [ { text: "This is dominant Extraverted Thinking (Te). The main concern is organizing the external world (the business) for maximum efficiency and achieving objective, measurable results.", cleanText: "The main concern is organizing the external world (the business) for maximum efficiency and achieving objective, measurable results.", value: "Te" }, { text: "This is Introverted Thinking (Ti). She is breaking the plan down into its core principles, checking for internal logical consistency and ensuring every piece of the system makes sense to her.", cleanText: "She is breaking the plan down into its core principles, checking for internal logical consistency and ensuring every piece of the system makes sense to her.", value: "Ti" } ] },
-            { scenario: "A brilliant but abrasive doctor ignores hospital rules and manipulates his team, obsessively exploring every bizarre possibility for a patient's illness. His motivation seems to be a deep-seated avoidance of his own personal pain and boredom.", options: [ { text: "This is an unhealthy Ne-Ti loop. His actions are driven by a need to avoid past trauma and pain by fixating on complex problems.", cleanText: "His strategy is to generate endless possibilities and ruthlessly analyze them, ignoring external rules. His actions are driven by a need to avoid past trauma and pain by fixating on complex problems.", value: "NeTiSi" }, { text: "This is a classic Ni-Fi loop. He has a singular vision of the 'one true diagnosis' and is driven by a personal moral code that the truth is more important than people's feelings.", cleanText: "He has a singular vision of the 'one true diagnosis' and is driven by a personal moral code that the truth is more important than people's feelings. He appears cold because his empathy is underdeveloped.", value: "NiFi" } ] },
-            { scenario: "Faced with a moral dilemma, a character chooses a path that, while less efficient, ensures that no one's personal values are violated and that everyone involved feels respected.", options: [ { text: "This points to a preference for Extraverted Feeling (Fe). The decision is based on maintaining group harmony and adhering to shared societal values of respect and consideration.", cleanText: "The decision is based on maintaining group harmony and adhering to shared societal values of respect and consideration.", value: "Fe" }, { text: "This is guided by Introverted Feeling (Fi). The choice aligns with their own deeply held, personal moral code, regardless of what is most logical or what the group wants.", cleanText: "The choice aligns with their own deeply held, personal moral code, regardless of what is most logical or what the group wants.", value: "Fi" } ] },
-            { scenario: "A historian spends their life archiving and cross-referencing historical texts, finding comfort and meaning in the preservation of detailed, verified facts from the past.", options: [ { text: "This is a clear display of Introverted Sensing (Si). Their focus is on the careful collection and review of detailed, past-oriented data, trusting what has been established and proven.", cleanText: "Their focus is on the careful collection and review of detailed, past-oriented data, trusting what has been established and proven.", value: "Si" }, { text: "This could be Introverted Thinking (Ti). They are building a vast, internally consistent framework of knowledge. The goal isn't just the facts, but creating a perfect, logical system.", cleanText: "They are building a vast, internally consistent framework of knowledge. The goal isn't just the facts, but creating a perfect, logical system.", value: "Ti" } ] },
-            { scenario: "A debater loves to argue for positions they don't even agree with, simply for the intellectual sport of exploring all sides of an argument and poking holes in logic.", options: [ { text: "This is a combination of Extraverted Intuition (Ne) and Introverted Thinking (Ti). They use their ability to see all the possibilities to analyze and deconstruct arguments with impersonal logic.", cleanText: "They see all the possibilities in an argument and use impersonal logic to analyze and deconstruct them for intellectual sport.", value: "NeTi" }, { text: "This is a form of Extraverted Thinking (Te). They are testing the strength of external systems of logic by stress-testing them in a live debate to see which holds up to scrutiny.", cleanText: "They are testing the strength of external systems of logic by stress-testing them in a live debate to see which holds up to scrutiny.", value: "Te" } ] },
-            { scenario: "An adventurer suddenly decides to sell all their possessions and move to a new country, not with a plan, but simply to experience a new way of life and see what happens.", options: [ { text: "This is the epitome of Extraverted Sensing (Se). They are seeking novel sensory experiences in the present moment and are highly adaptable to their physical environment, prioritizing action over planning.", cleanText: "They are seeking novel sensory experiences in the present moment and are highly adaptable to their physical environment, prioritizing action over planning.", value: "Se" }, { text: "This is driven by Extraverted Intuition (Ne). They are fascinated by the *possibility* of a new life and are jumping into a new context to explore all the potential new ideas that might emerge.", cleanText: "They are fascinated by the *possibility* of a new life and are jumping into a new context to explore all the potential new ideas that might emerge.", value: "Ne" } ] },
-            { scenario: "A community leader organizes a charity event, focusing meticulously on making everyone feel welcome, included, and emotionally positive throughout the day.", options: [ { text: "This is dominant Extraverted Feeling (Fe). Their primary goal is managing the emotional atmosphere of the group and fostering a sense of collective harmony and well-being.", cleanText: "Their primary goal is managing the emotional atmosphere of the group and fostering a sense of collective harmony and well-being.", value: "Fe" }, { text: "This is strong Introverted Sensing (Si). They are likely recreating a traditional, proven format for a successful event, focusing on details that have made people comfortable in the past.", cleanText: "They are likely recreating a traditional, proven format for a successful event, focusing on details that have made people comfortable in the past.", value: "Si" } ] },
-            { scenario: "An engineer spends weeks refining a single line of code, not to make it more efficient, but to make it more 'elegant' and logically pure within its own framework.", options: [ { text: "This is a pure expression of Introverted Thinking (Ti). The goal is not an external result (efficiency), but perfecting an internal system of logic to its most precise and consistent form.", cleanText: "The goal is not an external result (efficiency), but perfecting an internal system of logic to its most precise and consistent form.", value: "Ti" }, { text: "This shows Introverted Intuition (Ni). The 'elegance' they are striving for is an abstract, holistic vision of what perfect code should be, and they are working to match reality to that vision.", cleanText: "The 'elegance' they are striving for is an abstract, holistic vision of what perfect code should be, and they are working to match reality to that vision.", value: "Ni" } ] },
-            { scenario: "A general on the battlefield makes a risky, split-second decision based on a gut feeling about the enemy's movement, ignoring the established plan.", options: [ { text: "This is Extraverted Sensing (Se) acting in its highest form. They are reacting to the immediate, tangible reality of the battlefield and seizing a momentary opportunity that a plan couldn't account for.", cleanText: "They are reacting to the immediate, tangible reality of the battlefield and seizing a momentary opportunity that a plan couldn't account for.", value: "Se" }, { text: "This is Introverted Intuition (Ni) providing a sudden insight. They perceived an underlying pattern in the chaos that pointed to a future outcome, and they acted on that abstract prediction.", cleanText: "They perceived an underlying pattern in the chaos that pointed to a future outcome, and they acted on that abstract prediction.", value: "Ni" } ] },
-            { scenario: "A manager implements a new company-wide policy. Their main justification is, 'This is the standard, most reliable procedure used by all our top competitors. It's proven to work.'", options: [ { text: "This is Extraverted Thinking (Te) logic. They are importing an external system of logic that has been empirically proven to be effective and applying it to their own organization for efficiency.", cleanText: "They are importing an external system of logic that has been empirically proven to be effective and applying it to their own organization for efficiency.", value: "Te" }, { text: "This is Introverted Sensing (Si) logic. They are relying on the authority of past successes and established tradition ('what has always worked') as the primary reason for action, valuing its reliability.", cleanText: "They are relying on the authority of past successes and established tradition ('what has always worked') as the primary reason for action, valuing its reliability.", value: "Si" } ] },
-            { scenario: "A protestor refuses to compromise on a key issue, stating, 'This is a matter of my personal conscience. It feels wrong to me, and I cannot betray that, no matter the consequences.'", options: [ { text: "This is a clear display of dominant Introverted Feeling (Fi). The decision is based entirely on an internal, personal moral framework that is non-negotiable, independent of group opinion.", cleanText: "The decision is based entirely on an internal, personal moral framework that is non-negotiable, independent of group opinion.", value: "Fi" }, { text: "This could be seen as unhealthy Introverted Thinking (Ti). They have a rigid internal logical framework of 'right' and 'wrong' and are refusing to consider external data that might challenge it.", cleanText: "They have a rigid internal logical framework of 'right' and 'wrong' and are refusing to consider external data that might challenge it.", value: "Ti" } ] },
-            { scenario: "An inventor's workshop is filled with dozens of half-finished projects, as they constantly jump from one new, exciting idea to the next without always seeing them through.", options: [ { text: "This is the nature of Extraverted Intuition (Ne). The joy is in the exploration of new possibilities and the initial act of creation, not necessarily in the tedious process of finishing every single one.", cleanText: "The joy is in the exploration of new possibilities and the initial act of creation, not necessarily in the tedious process of finishing every single one.", value: "Ne" }, { text: "This is Extraverted Sensing (Se) looking for new stimuli. They are moving from one hands-on, engaging activity to the next, seeking novel sensory engagement rather than completing long-term projects.", cleanText: "They are moving from one hands-on, engaging activity to the next, seeking novel sensory engagement rather than completing long-term projects.", value: "Se" } ] },
-            { scenario: "A diplomat successfully negotiates a peace treaty by accurately sensing the unspoken emotional needs of each party and finding a solution that addresses everyone's feelings.", options: [ { text: "This is a mastery of Extraverted Feeling (Fe). They are reading the emotional dynamics of the room and using that information to build consensus and social harmony.", cleanText: "They are reading the emotional dynamics of the room and using that information to build consensus and social harmony.", value: "Fe" }, { text: "This is Introverted Intuition (Ni) combined with Feeling. They have an intuitive insight into the deeper, underlying motivations of each party and use that vision to guide them to a peaceful outcome.", cleanText: "They have an intuitive insight into the deeper, underlying motivations of each party and use that vision to guide them to a peaceful outcome.", value: "Ni" } ] },
-            { scenario: "A strategist solves crimes by intentionally creating chaos and disrupting social norms to see how people react. They don't have one grand plan, but rather react to the infinite possibilities they create. Their motivation seems tied to a promise made to a deceased friend, and they admit to being unable to understand others' emotions, even while predicting their actions perfectly.", options: [ { text: "This is a clear Ne-Ti-Fe-Si axis. Their actions are haunted by a past event, and their inability to understand emotions points to a specific blindspot.", cleanText: "Their strategy is to generate possibilities, predict reactions, and analyze the results. Their actions are haunted by a past event, and their inability to understand emotions points to a specific blindspot.", value: "NeTiFeSi" }, { text: "This is an Ni-dom with well-developed Te. Their chaotic actions are part of a single, complex plan to achieve an objective. Their stated motivation is a cover for a deeper, more personal code of justice.", cleanText: "Their chaotic actions are part of a single, complex plan to achieve an objective. Their stated motivation is a cover for a deeper, more personal code of justice, and their ability to predict people comes from a place of deep empathy.", value: "NiTeFeFi" } ] },
-            { scenario: "A tech CEO is known for tackling problems by breaking them down to their absolute 'first principles,' ignoring how others have done it before. He pursues many divergent, seemingly unrelated projects at once and often makes awkward attempts to be 'cool' and gain public approval, which sometimes backfire.", options: [ { text: "This is a Ti-Ne-Si-Fe stack. His 'first principles' approach is classic for his type. The scattered projects show a love for exploring possibilities. His awkward attempts at social validation are a clear sign of an insecure, underdeveloped social function.", cleanText: "His 'first principles' approach is classic for his type. The scattered projects show a love for exploring possibilities. His awkward attempts at social validation are a clear sign of an insecure, underdeveloped social function.", value: "TiNeSiFe" }, { text: "This is an Ni-Te-Fi-Se stack. His projects are all part of a single, unified vision for the future. His drive to execute them is a sign of his organizational skills. His public persona is an expression of his personal values, and he disregards social norms because he is blind to them.", cleanText: "His projects are all part of a single, unified vision for the future. His drive to execute them is a sign of his organizational skills. His public persona is an expression of his personal values, and he disregards social norms because he is blind to them.", value: "NiTeFiSe" } ] },
-            { scenario: "A world-class chef demands absolute perfection from his experienced staff, often yelling at them for incompetence. However, he is patient and encouraging with young, learning chefs. His insults towards the adults are often surprisingly creative and metaphorical.", options: [ { text: "This is a Te-Si-Ne-Fi stack. His demand for competence is his dominant trait. His patience with children shows a developed personal code of who 'deserves' harshness. The creative insults are a sign of a playful, idea-generating function being used to serve his dominant nature.", cleanText: "His demand for competence is his dominant trait. His patience with children shows a developed personal code of who 'deserves' harshness. The creative insults are a sign of a playful, idea-generating function being used to serve his dominant nature.", value: "TeSiNeFi" }, { text: "This is an Se-Ti-Fe-Ni stack. His focus on the physical craft of cooking is his primary trait. His harshness is a sign of stress-induced, unhealthy emotional expression, where he can't control the atmosphere. His insults are just him lashing out.", cleanText: "His focus on the physical craft of cooking is his primary trait. His harshness is a sign of stress-induced, unhealthy emotional expression, where he can't control the atmosphere. His insults are just him lashing out.", value: "SeTiFeNi" } ] },
-            { scenario: "A young, energetic hero is relentlessly driven to achieve a grand future goal. He is often playful and impulsive, but his core motivation comes from a deep, personal value system, and he refuses to give up on his friends, even when it's illogical to do so. He seems to be fueled more by the *idea* of a better future than by present-day realities.", options: [ { text: "This is a Ne-Fi stack. His focus on a future dream and the 'potential' in people is his primary trait. This is guided by a powerful, unwavering internal moral code that dictates his loyalty, regardless of circumstance.", cleanText: "His focus on a future dream and the 'potential' in people is his primary trait. This is guided by a powerful, unwavering internal moral code that dictates his loyalty, regardless of circumstance.", value: "NeFi" }, { text: "This is an Se-Fi stack. His high energy and impulsive actions are his primary trait. He is driven by the immediate, tangible experience of being a hero. His loyalty is strong, but it's grounded in the real-world, shared experiences he has with his friends.", cleanText: "His high energy and impulsive actions are his primary trait. He is driven by the immediate, tangible experience of being a hero. His loyalty is strong, but it's grounded in the real-world, shared experiences he has with his friends.", value: "SeFi" } ] },
-            { scenario: "A meticulous and patient criminal mastermind spends years building a flawless empire. Every action is a deliberate step in a long-term strategy. He values efficiency and competence above all, and his ultimate goal is not just profit, but to fulfill a deeply personal, decades-old vendetta.", options: [ { text: "This is an Ni-Te stack. The entire empire is a manifestation of a single, long-term vision. He uses his organizational skills to build ruthlessly efficient systems to achieve his goal. His personal vendetta is the deep, introverted feeling that fuels his entire plan.", cleanText: "The entire empire is a manifestation of a single, long-term vision. He uses his organizational skills to build ruthlessly efficient systems to achieve his goal. His personal vendetta is the deep, introverted feeling that fuels his entire plan.", value: "NiTeFi" }, { text: "This is an Si-Te stack. He is building his empire based on proven, reliable methods that he has perfected over time. His focus on order and efficiency is his secondary trait. His vendetta is simply a past event that he feels a duty to correct.", cleanText: "He is building his empire based on proven, reliable methods that he has perfected over time. His focus on order and efficiency is his secondary trait. His vendetta is simply a past event that he feels a duty to correct.", value: "SiTe" } ] },
-            { scenario: "A quiet, gentle character dedicates their life to caring for the vulnerable. They avoid conflict for themselves, but become surprisingly assertive when defending others. They believe they have a special gift for caretaking and feel it's their duty, sometimes becoming possessive of those they help, believing only they know what's best.", options: [ { text: "This suggests an ISFJ (Si-Fe-Ti-Ne). Their caretaking is a duty born from past experiences and a desire for group harmony. The assertiveness is their 'protector' nature coming out. The possessiveness is a manifestation of pride, believing their help is indispensable.", cleanText: "Their caretaking is a duty born from past experiences and a desire for group harmony. The assertiveness is their 'protector' nature coming out. The possessiveness is a manifestation of pride, believing their help is indispensable.", value: "SiFe" }, { text: "This suggests an INFP (Fi-Ne-Si-Te). Their dedication comes from a deep personal value system. They defend others because it aligns with their morals. The shyness is a classic trait, and the 'special gift' feeling is their sense of identity creating a unique role for themselves as a caretaker.", cleanText: "Their dedication comes from a deep personal value system. They defend others because it aligns with their morals. The shyness is a classic trait, and the 'special gift' feeling is their sense of identity creating a unique role for themselves as a caretaker.", value: "FiNe" } ] },
-            { scenario: "A stoic soldier is known for his incredible, almost supernatural, speed and reactivity in combat. He makes split-second decisions based on the immediate physical environment, not a grand strategy. While outwardly cold, he shows rare, awkward bursts of intense rage and care when his comrades are harmed.", options: [ { text: "This is a Ti-Se-Ni-Fe stack. His combat prowess comes from a mastery of the physical world guided by detached, in-the-moment logic. He has no grand vision. The awkward care for his team is a clear sign of an underdeveloped, but powerful, social function.", cleanText: "His combat prowess comes from a mastery of the physical world guided by detached, in-the-moment logic. He has no grand vision. The awkward care for his team is a clear sign of an underdeveloped, but powerful, social function.", value: "TiSeNiFe" }, { text: "This is an Ni-Te-Fi-Se stack. His combat skill is the result of a long-term, perfected vision of battle, executed with ruthless efficiency. His coldness comes from a deep personal code, and his supposed 'reactivity' is just his less-developed sensory side executing his vision's plan.", cleanText: "His combat skill is the result of a long-term, perfected vision of battle, executed with ruthless efficiency. His coldness comes from a deep personal code, and his supposed 'reactivity' is just his less-developed sensory side executing his vision's plan.", value: "NiTeFiSe" } ] },
-            { scenario: "A charismatic and rebellious leader starts a movement based on intense, physical experiences and the rejection of consumerism. His morality is oriented towards 'concrete enjoyment' and feeling alive. His grand plans often seem like strange, paranoid, abstract projections rather than a coherent ideology.", options: [ { text: "This is an Se-Ti-Fe-Ni stack. His entire focus is on the strongest possible sensation and concrete, real-life action, which he rationalizes with internal logic. His grand, destructive schemes are a classic sign of an unhealthy, paranoid visionary function.", cleanText: "His entire focus is on the strongest possible sensation and concrete, real-life action, which he rationalizes with internal logic. His grand, destructive schemes are a classic sign of an unhealthy, paranoid visionary function.", value: "SeTiFeNi" }, { text: "This is an Ne-Ti-Fe-Si stack. His rebellion is against societal norms and traditions. He is exploring the abstract possibility of a world without rules. His ideology, though chaotic, is the primary driver of his actions.", cleanText: "His rebellion is against societal norms and traditions. He is exploring the abstract possibility of a world without rules. His ideology, though chaotic, is the primary driver of his actions.", value: "NeTiFeSi" } ] },
-            { scenario: "A character is obsessed with a personal, all-consuming definition of 'freedom.' They are aware that their actions to achieve this are morally wrong and will cause immense suffering, and they hate themselves for it, yet they proceed anyway because they feel they have no other choice. Their 'future sight' seems less like a strategic plan and more like a tragic destiny they are forced to follow.", options: [ { text: "This is a clear case of dominant Introverted Feeling (Fi). Their actions are driven by an unshakable, personal value ('freedom'), even when it conflicts with logic and external morality. Their apparent future-planning is a weak, underdeveloped visionary function being overpowered by their dominant desires, forcing them down a single, tragic path.", cleanText: "Their actions are driven by an unshakable, personal value ('freedom'), even when it conflicts with logic and external morality. Their apparent future-planning is a weak, underdeveloped visionary function being overpowered by their dominant desires, forcing them down a single, tragic path.", value: "FiSeNi" }, { text: "This is a dominant Introverted Intuition (Ni) user executing a complex, long-term plan. Their actions, though seemingly evil, are all part of a master strategy to achieve a specific future outcome. Their self-hatred is a sign of a tertiary personal moral code, acknowledging the personal cost of their logical, objective actions.", cleanText: "Their actions, though seemingly evil, are all part of a master strategy to achieve a specific future outcome. Their self-hatred is a sign of a tertiary personal moral code, acknowledging the personal cost of their logical, objective actions.", value: "NiTeFi" } ] },
-            { scenario: "A charismatic leader manipulates everyone around them with flawless precision. Their stated goal is to create a better world, but their true, ultimate motivation is to achieve a state of emotional wholeness by forming a bond with a specific, idealized entity. They will adopt any system or ideology as a tool to achieve this personal, relational goal.", options: [ { text: "This is a dominant Extraverted Feeling (Fe) user. Their entire world revolves around achieving a specific emotional and relational state with an external 'object' (the entity). They use their visionary function to form strategies, but the core drive is the need for a harmonious connection, even a twisted one.", cleanText: "Their entire world revolves around achieving a specific emotional and relational state with an external 'object' (the entity). They use their visionary function to form strategies, but the core drive is the need for a harmonious connection, even a twisted one.", value: "FeNi" }, { text: "This is a dominant Extraverted Thinking (Te) user. Their primary goal is the creation of a perfect, efficient system ('a better world'). Their personal feelings are secondary. The bond they seek is a means to an end, a tool to gain more control and further their objective, logical plan.", cleanText: "Their primary goal is the creation of a perfect, efficient system ('a better world'). Their personal feelings are secondary. The bond they seek is a means to an end, a tool to gain more control and further their objective, logical plan.", value: "TeNi" } ] },
-            { scenario: "A loyal and stoic protector is defined by their unwavering devotion to a specific person from their past. They use their past experiences as a filter to understand the present, and their moral code is a deeply personal, unspoken value. While dutiful, they will defy any authority to protect those they care about, and only late in life do they begin to consider possibilities beyond this core duty.", options: [ { text: "This is an Si-Te-Fi-Ne stack. Their worldview is built on a foundation of past experiences. Their loyalty is a deeply held personal value that doesn't need external justification. Their struggle to see a future beyond their duty shows a developing, less-used visionary function.", cleanText: "Their worldview is built on a foundation of past experiences. Their loyalty is a deeply held personal value that doesn't need external justification. Their struggle to see a future beyond their duty shows a developing, less-used visionary function.", value: "SiTeFiNe" }, { text: "This is an Fi-Se-Ni-Te stack. Their core motivation is their intense, personal feeling for one person. Their practical skills are a sign of a well-developed sensory function. Their inability to see other possibilities is a sign that their visionary function is underdeveloped, not that it's their weakest one.", cleanText: "Their core motivation is their intense, personal feeling for one person. Their practical skills are a sign of a well-developed sensory function. Their inability to see other possibilities is a sign that their visionary function is underdeveloped, not that it's their weakest one.", value: "FiSeNiTe" } ] },
-            { scenario: "A character calmly believes in strange, unproven creatures and concepts. They don't try to prove these beliefs with evidence, nor do they build a complex logical system around them. They simply accept these ideas as true because they resonate with their personal worldview, and they remain unbothered when others mock them.", options: [ { text: "This is a Fi-Ne-Si-Te stack. The beliefs are a product of a strong, individualistic inner world. They don't need external proof. They explore these ideas' possibilities rather than trying to fit them into a rigid logical framework.", cleanText: "The beliefs are a product of a strong, individualistic inner world. They don't need external proof. They explore these ideas' possibilities rather than trying to fit them into a rigid logical framework.", value: "FiNeSiTe" }, { text: "This is a Ti-Ne-Si-Fe stack. The beliefs are part of a quirky but internally consistent logical system. They don't care about external validation because their logic is subjective. Their calmness in the face of mockery is a sign of a detached, underdeveloped social function.", cleanText: "The beliefs are part of a quirky but internally consistent logical system. They don't care about external validation because their logic is subjective. Their calmness in the face of mockery is a sign of a detached, underdeveloped social function.", value: "TiNeSiFe" } ] },
-             // New Question based on Light Yagami analysis
-            { scenario: "A brilliant leader seeks to create a 'perfect' new world order based on their own definition of justice. They are incredibly efficient and create complex, logical systems to achieve their goals. They view their own personal feelings and sentimental attachments as weaknesses that must be suppressed to avoid making mistakes.", options: [ { text: "This is a Te-Ni-Se-Fi stack. The primary drive is to impose an objective, logical system on the world, guided by a singular vision. Personal values are actively suppressed as a liability.", cleanText: "The primary drive is to impose an objective, logical system on the world, guided by a singular vision. Personal values are actively suppressed as a liability.", value: "TeNiSeFi" }, { text: "This is an Ni-Te-Fi-Se stack. The primary drive is the internal vision itself. The systems they build are merely tools to realize this vision. They are guided by a quiet but strong personal moral code, not a suppression of it.", cleanText: "The primary drive is the internal vision itself. The systems they build are merely tools to realize this vision. They are guided by a quiet but strong personal moral code, not a suppression of it.", value: "NiTeFiSe" } ] },
-            // New Question based on Cassie Howard analysis
-            { scenario: "A character consistently makes decisions that are illogical and even self-destructive, purely to please a partner or fit in with a group. They have meticulous daily routines, but these routines are focused entirely on making themselves more appealing to others. When confronted, they justify their poor choices with weak, emotional reasoning.", options: [ { text: "This is a classic Fe-Si loop. Their primary drive is to maintain external harmony and be loved, even if it means ignoring logic. Their routines are a manifestation of their past-oriented function being used to support their social goals—finding reliable ways to be seen as desirable.", cleanText: "Their primary drive is to maintain external harmony and be loved, even if it means ignoring logic. Their routines are a manifestation of their past-oriented function being used to support their social goals—finding reliable ways to be seen as desirable.", value: "FeSiTi" }, { text: "This is an unhealthy Fi-Se user. Their actions, while seemingly for others, are actually driven by their own intense, personal feelings and values. They are being 'true to their heart,' even if it's destructive. Their routines are just a way to manage their chaotic, in-the-moment impulses.", cleanText: "Their actions, while seemingly for others, are actually driven by their own intense, personal feelings and values. They are being 'true to their heart,' even if it's destructive. Their routines are just a way to manage their chaotic, in-the-moment impulses.", value: "FiSe" } ] },
-            // New Question based on Luffy analysis
-            { scenario: "An adventurous and charismatic captain leads their crew with infectious optimism. Their goal is simple and grand: to reach a legendary treasure. They solve problems directly and physically, often by punching them. Their loyalty to their friends is absolute, based on a simple, deeply felt personal code, and they are motivated by the thrill of new experiences, foods, and fights.", options: [ { text: "This is a classic Se-Fi stack. Their primary engagement with the world is through direct, physical experience. Their decisions are guided by a simple, strong internal moral code. Their grand dream is not an abstract vision, but a tangible goal that facilitates more sensory adventure.", cleanText: "Their primary engagement with the world is through direct, physical experience. Their decisions are guided by a simple, strong internal moral code. Their grand dream is not an abstract vision, but a tangible goal that facilitates more sensory adventure.", value: "SeFiNi" }, { text: "This is a Ne-Fi stack. Their grand dream is a symbol of ultimate possibility and freedom. Their loyalty is based on the potential they see in their friends and their personal values. Their physical approach is just their underdeveloped, less-used sensory function making them act impulsively.", cleanText: "Their grand dream is a symbol of ultimate possibility and freedom. Their loyalty is based on the potential they see in their friends and their personal values. Their physical approach is just their underdeveloped, less-used sensory function making them act impulsively.", value: "NeFiSi" } ] },
-            // Expanded Question Bank
-            { scenario: "A scientist becomes obsessed with a single, unifying theory. They withdraw from the world, ignoring practical concerns and peer review, to focus solely on making their internal conceptual model of the universe perfect and internally consistent.", options: [ { text: "This is dominant Introverted Intuition (Ni) paired with tertiary Introverted Thinking (Ti). The focus is on a single, all-encompassing vision, which they are perfecting for its own logical elegance, not for external application.", cleanText: "The focus is on a single, all-encompassing vision, which they are perfecting for its own logical elegance, not for external application.", value: "NiTi" }, { text: "This is dominant Introverted Thinking (Ti) paired with auxiliary Extraverted Intuition (Ne). They are building a logical system and using their idea-generating function to explore possibilities that fit within it, but the primary drive is logical purity, not a single vision.", cleanText: "They are building a logical system and using their idea-generating function to explore possibilities that fit within it, but the primary drive is logical purity, not a single vision.", value: "TiNe" } ] },
-            { scenario: "A performer on stage is completely in their element, feeding off the crowd's energy, improvising their act based on the audience's reactions, and creating a vibrant, shared emotional experience.", options: [ { text: "This is a masterful use of the Fe-Se axis. They are reading and influencing the group's emotional state while simultaneously being highly attuned to the immediate physical and sensory environment.", cleanText: "They are reading and influencing the group's emotional state while simultaneously being highly attuned to the immediate physical and sensory environment.", value: "FeSe" }, { text: "This is a Ne-Fi user in their element. They are exploring possibilities of how to entertain while staying true to their authentic, expressive self. The connection with the audience is a byproduct of their self-expression.", cleanText: "They are exploring possibilities of how to entertain while staying true to their authentic, expressive self. The connection with the audience is a byproduct of their self-expression.", value: "NeFi" } ] },
-            { scenario: "An elderly librarian can instantly recall the exact location of a specific book and the detailed history of its publication without looking it up. They find deep comfort in the established order and reliability of the library's system.", options: [ { text: "This is dominant Introverted Sensing (Si). Their mind is a vast, detailed library of past experiences and concrete data, which they trust above all else. The system's reliability is paramount.", cleanText: "Their mind is a vast, detailed library of past experiences and concrete data, which they trust above all else. The system's reliability is paramount.", value: "Si" }, { text: "This is highly developed Introverted Thinking (Ti). They have created such a perfect internal logical map of the library that their recall is a function of understanding the system's structure, not just remembering facts.", cleanText: "They have created such a perfect internal logical map of the library that their recall is a function of understanding the system's structure, not just remembering facts.", value: "Ti" } ] },
-            { scenario: "A corporate executive is famous for their ability to 'clean house.' They enter a failing department, identify inefficient processes and incompetent employees, and restructure the entire system for maximum productivity and profit, without regard for tradition or morale.", options: [ { text: "This is dominant Extraverted Thinking (Te). Their entire focus is on organizing the external environment and its people into an efficient, logical, and effective system to achieve objective goals.", cleanText: "Their entire focus is on organizing the external environment and its people into an efficient, logical, and effective system to achieve objective goals.", value: "Te" }, { text: "This is dominant Extraverted Sensing (Se). They are reacting to the immediate, tangible problem of failure and taking direct, decisive action to fix it. The restructuring is a practical solution to a present-moment crisis.", cleanText: "They are reacting to the immediate, tangible problem of failure and taking direct, decisive action to fix it. The restructuring is a practical solution to a present-moment crisis.", value: "Se" } ] },
-            { scenario: "A young activist is driven by a powerful, personal conviction that a certain law is unjust. They can't always articulate their reasoning with complex logic, but they are absolutely unwavering because the law violates their core identity and what they feel is right.", options: [ { text: "This is dominant Introverted Feeling (Fi). Their motivation comes from a deep, non-negotiable internal value system. The authenticity of their feeling is more important than external logic or group consensus.", cleanText: "Their motivation comes from a deep, non-negotiable internal value system. The authenticity of their feeling is more important than external logic or group consensus.", value: "Fi" }, { text: "This is dominant Extraverted Feeling (Fe). They are reacting to the disharmony and suffering the law causes in the community. Their conviction comes from a desire to protect the collective's well-being.", cleanText: "They are reacting to the disharmony and suffering the law causes in the community. Their conviction comes from a desire to protect the collective's well-being.", value: "Fe" } ] },
-            { scenario: "A street-smart hustler is an expert at reading people's immediate intentions and using their physical surroundings to their advantage. They are a master of improvisation, always finding a clever, practical way out of a tight spot.", options: [ { text: "This is the Se-Ti axis in action. They are highly attuned to the physical environment and opportunities and use a sharp, internal logic to exploit them for immediate gain.", cleanText: "They are highly attuned to the physical environment and opportunities and use a sharp, internal logic to exploit them for immediate gain.", value: "SeTi" }, { text: "This is the Ne-Fe axis. They are reading the possibilities in the social situation and using their understanding of people's emotions to charm and manipulate their way out of trouble.", cleanText: "They are reading the possibilities in the social situation and using their understanding of people's emotions to charm and manipulate their way out of trouble.", value: "NeFe" } ] },
-            { scenario: "A traditionalist parent insists on raising their children the exact same way they were raised, believing that these time-tested methods are the most reliable and responsible way to ensure a good outcome.", options: [ { text: "This is a clear preference for Introverted Sensing (Si). They are relying on a detailed, personal history of what is known and proven to be safe and effective, and they are applying that past experience to the present.", cleanText: "They are relying on a detailed, personal history of what is known and proven to be safe and effective, and they are applying that past experience to the present.", value: "Si" }, { text: "This is a preference for Extraverted Thinking (Te). They have identified a system that has been proven to work externally ('the way it's always been done') and are applying that objective, efficient formula to their family.", cleanText: "They have identified a system that has been proven to work externally ('the way it's always been done') and are applying that objective, efficient formula to their family.", value: "Te" } ] },
-            { scenario: "A philosopher spends their life exploring abstract paradoxes and questioning the fundamental nature of reality. They are more interested in asking profound questions and exploring potential answers than in finding one single, definitive truth.", options: [ { text: "This is the Ne-Ti axis. They use their idea-generating function to explore endless abstract possibilities and questions, and their logical function to analyze the consistency of each one, without needing to come to a final conclusion.", cleanText: "They use their idea-generating function to explore endless abstract possibilities and questions, and their logical function to analyze the consistency of each one, without needing to come to a final conclusion.", value: "NeTi" }, { text: "This is the Ni-Fe axis. They have an intuitive vision of a more harmonious and understood world and are using their exploration of ideas to guide humanity towards that better understanding.", cleanText: "They have an intuitive vision of a more harmonious and understood world and are using their exploration of ideas to guide humanity towards that better understanding.", value: "NiFe" } ] }
-        ];
+
+    <script>
+    // NEW: Wrapped all logic in an object to avoid polluting global scope
+    const mbtiTestApp = {
+        // --- DATA & CONFIG ---
+        mbtiInfo: {
+            ISTJ: { title: "The Inspector", stack: ['Si', 'Te', 'Fi', 'Ne'] }, ISFJ: { title: "The Protector", stack: ['Si', 'Fe', 'Ti', 'Ne'] },
+            INFJ: { title: "The Advocate", stack: ['Ni', 'Fe', 'Ti', 'Se'] }, INTJ: { title: "The Architect", stack: ['Ni', 'Te', 'Fi', 'Se'] },
+            ISTP: { title: "The Virtuoso", stack: ['Ti', 'Se', 'Ni', 'Fe'] }, ISFP: { title: "The Adventurer", stack: ['Fi', 'Se', 'Ni', 'Te'] },
+            INFP: { title: "The Mediator", stack: ['Fi', 'Ne', 'Si', 'Te'] }, INTP: { title: "The Logician", stack: ['Ti', 'Ne', 'Si', 'Fe'] },
+            ESTP: { title: "The Entrepreneur", stack: ['Se', 'Ti', 'Fe', 'Ni'] }, ESFP: { title: "The Entertainer", stack: ['Se', 'Fi', 'Te', 'Ni'] },
+            ENFP: { title: "The Campaigner", stack: ['Ne', 'Fi', 'Te', 'Si'] }, ENTP: { title: "The Debater", stack: ['Ne', 'Ti', 'Fe', 'Si'] },
+            ESTJ: { title: "The Executive", stack: ['Te', 'Si', 'Ne', 'Fi'] }, ESFJ: { title: "The Consul", stack: ['Fe', 'Si', 'Ne', 'Ti'] },
+            ENFJ: { title: "The Protagonist", stack: ['Fe', 'Ni', 'Se', 'Ti'] }, ENTJ: { title: "The Commander", stack: ['Te', 'Ni', 'Se', 'Fi'] }
+        },
+        questionBank: {
+             TeFi: [
+                { scenario: "Your company asks you to work on a project that would be profitable but conflicts with your personal values.", options: [ { text: "Decline the project - staying true to your values is more important than external success.", cleanText: "Decline the project - staying true to your values is more important than external success.", value: "Fi" }, { text: "Take the project because it is the objectively effective and profitable course of action for the company.", cleanText: "Take the project because it is the objectively effective and profitable course of action for the company.", value: "Te" } ] },
+                { scenario: "When evaluating a new policy, what is your primary concern?", options: [ { text: "Does this policy align with what I personally believe is right and authentic?", cleanText: "Does this policy align with what I personally believe is right and authentic?", value: "Fi" }, { text: "Is this policy efficient, logical, and does it produce measurable results?", cleanText: "Is this policy efficient, logical, and does it produce measurable results?", value: "Te" } ] },
+                { scenario: "A brilliant leader seeks to create a 'perfect' new world order based on their own definition of justice. They view their own personal feelings and sentimental attachments as weaknesses that must be suppressed to avoid making mistakes.", options: [ { text: "This leader is driven by a primary need to impose an objective, logical system on the world, guided by a singular vision. Personal values are actively suppressed as a liability.", cleanText: "This leader is driven by a primary need to impose an objective, logical system on the world, guided by a singular vision. Personal values are actively suppressed as a liability.", value: "Te" }, { text: "This leader is driven by a quiet but strong personal moral code. The systems they build are merely tools to realize this personal vision, not the primary goal itself.", cleanText: "This leader is driven by a quiet but strong personal moral code. The systems they build are merely tools to realize this personal vision, not the primary goal itself.", value: "Fi" } ] },
+                { scenario: "A young activist is driven by a powerful, personal conviction that a certain law is unjust. They can't always articulate their reasoning with complex logic, but they are absolutely unwavering because the law violates their core identity and what they feel is right.", options: [ { text: "Their motivation comes from a deep, non-negotiable internal value system. The authenticity of their feeling is more important than external logic or group consensus.", cleanText: "Their motivation comes from a deep, non-negotiable internal value system. The authenticity of their feeling is more important than external logic or group consensus.", value: "Fi" }, { text: "Their motivation comes from an objective analysis of the law's negative impact on society's efficiency and structure, and they are driven to correct this systemic flaw.", cleanText: "Their motivation comes from an objective analysis of the law's negative impact on society's efficiency and structure, and they are driven to correct this systemic flaw.", value: "Te" } ] },
+                { scenario: "When faced with a difficult choice, a leader's first question is 'What is the most effective path to our goal?' They prioritize objective outcomes and measurable success.", options: [ { text: "This is a clear focus on external effectiveness. The decision-making process is detached, analytical, and focused on impersonal criteria like efficiency.", cleanText: "The decision-making process is detached, analytical, and focused on impersonal criteria like efficiency.", value: "Te" }, { text: "This is a focus on personal values. The 'goal' itself is a reflection of what they believe is right, and effectiveness is just the means to that value-driven end.", cleanText: "The 'goal' itself is a reflection of what they believe is right, and effectiveness is just the means to that value-driven end.", value: "Fi" } ] },
+            ],
+            FeTi: [
+                { scenario: "In a team meeting, someone presents a solution that everyone agrees with, but you notice a logical flaw in the reasoning.", options: [ { text: "Point out the flaw immediately - logical consistency is more important than group harmony.", cleanText: "Point out the flaw immediately - logical consistency is more important than group harmony.", value: "Ti" }, { text: "Support the group decision since everyone else agrees and it maintains team cohesion.", cleanText: "Support the group decision since everyone else agrees and it maintains team cohesion.", value: "Fe" } ] },
+                { scenario: "When giving feedback to someone who's sensitive to criticism, your primary focus is on:", options: [ { text: "Framing the feedback in a way that maintains their confidence and motivation.", cleanText: "Framing the feedback in a way that maintains their confidence and motivation.", value: "Fe" }, { text: "Delivering the most accurate and logically sound critique, even if it's uncomfortable.", cleanText: "Delivering the most accurate and logically sound critique, even if it's uncomfortable.", value: "Ti" } ] },
+                { scenario: "A character consistently makes decisions that are illogical and even self-destructive, purely to please a partner or fit in with a group. They justify their poor choices with weak, emotional reasoning.", options: [ { text: "Their primary drive is to maintain external harmony and be loved, even if it means ignoring their own internal logic. Their routines support this social goal.", cleanText: "Their primary drive is to maintain external harmony and be loved, even if it means ignoring their own internal logic. Their routines support this social goal.", value: "Fe" }, { text: "Their actions are driven by a flawed but consistent internal logic. They believe these self-destructive actions are the 'correct' steps within their own framework, regardless of social outcomes.", cleanText: "Their actions are driven by a flawed but consistent internal logic. They believe these self-destructive actions are the 'correct' steps within their own framework, regardless of social outcomes.", value: "Ti" } ] },
+                { scenario: "You need to understand a complex system. What is your preferred method?", options: [ { text: "Discuss it with a group of people, building on their ideas and creating a shared understanding.", cleanText: "Discuss it with a group of people, building on their ideas and creating a shared understanding.", value: "Fe" }, { text: "Take it apart by yourself, piece by piece, until you have built a complete and logically consistent model in your own mind.", cleanText: "Take it apart by yourself, piece by piece, until you have built a complete and logically consistent model in your own mind.", value: "Ti" } ] },
+                { scenario: "When you see a social injustice, what is your first impulse?", options: [ { text: "To understand the flawed logical principles that allowed the injustice to happen in the first place.", cleanText: "To understand the flawed logical principles that allowed the injustice to happen in the first place.", value: "Ti" }, { text: "To address the suffering of the people affected and restore a sense of community and fairness.", cleanText: "To address the suffering of the people affected and restore a sense of community and fairness.", value: "Fe" } ] },
+            ],
+            NeSi: [
+                { scenario: "When starting a new project, you are more likely to:", options: [ { text: "Brainstorm many new possibilities and innovative approaches, even if they are untested.", cleanText: "Brainstorm many new possibilities and innovative approaches, even if they are untested.", value: "Ne" }, { text: "Rely on established, proven methods that you know from past experience will be reliable.", cleanText: "Rely on established, proven methods that you know from past experience will be reliable.", value: "Si" } ] },
+                { scenario: "You're planning a vacation. What is more appealing?", options: [ { text: "Going to a brand new place to explore unexpected opportunities and possibilities.", cleanText: "Going to a brand new place to explore unexpected opportunities and possibilities.", value: "Ne" }, { text: "Returning to a beloved location where you have fond memories and know you'll have a comfortable, reliable experience.", cleanText: "Returning to a beloved location where you have fond memories and know you'll have a comfortable, reliable experience.", value: "Si" } ] },
+                { scenario: "When listening to someone tell a story, you are more focused on:", options: [ { text: "The specific, concrete details and the sequence of events as they actually happened.", cleanText: "The specific, concrete details and the sequence of events as they actually happened.", value: "Si" }, { text: "The underlying themes, connections to other ideas, and the future implications of the story.", cleanText: "The underlying themes, connections to other ideas, and the future implications of the story.", value: "Ne" } ] },
+                { scenario: "When approaching a familiar task, you prefer to:", options: [ { text: "Follow the established, step-by-step procedure that you know works well.", cleanText: "Follow the established, step-by-step procedure that you know works well.", value: "Si" }, { text: "Experiment with new ways of doing it to see if you can find a novel or more interesting approach.", cleanText: "Experiment with new ways of doing it to see if you can find a novel or more interesting approach.", value: "Ne" } ] },
+                { scenario: "An inventor's workshop is filled with dozens of half-finished projects, as they constantly jump from one new, exciting idea to the next without always seeing them through.", options: [ { text: "The joy is in the exploration of new possibilities and the initial act of creation, not necessarily in the tedious process of finishing every single one.", cleanText: "The joy is in the exploration of new possibilities and the initial act of creation, not necessarily in the tedious process of finishing every single one.", value: "Ne" }, { text: "The primary focus is on the detailed, hands-on process of building. They move on when the initial, familiar steps of construction are complete.", cleanText: "The primary focus is on the detailed, hands-on process of building. They move on when the initial, familiar steps of construction are complete.", value: "Si" } ] },
+            ],
+            NiSe: [
+                { scenario: "A general on the battlefield makes a risky, split-second decision based on a gut feeling about the enemy's movement, ignoring the established plan.", options: [ { text: "They are reacting to the immediate, tangible reality of the battlefield and seizing a momentary opportunity that a plan couldn't account for.", cleanText: "They are reacting to the immediate, tangible reality of the battlefield and seizing a momentary opportunity that a plan couldn't account for.", value: "Se" }, { text: "They perceived an underlying pattern in the chaos that pointed to a future outcome, and they acted on that abstract prediction.", cleanText: "They perceived an underlying pattern in the chaos that pointed to a future outcome, and they acted on that abstract prediction.", value: "Ni" } ] },
+                { scenario: "An adventurer suddenly decides to sell all their possessions and move to a new country, not with a plan, but simply to experience a new way of life and see what happens.", options: [ { text: "They are seeking novel sensory experiences in the present moment and are highly adaptable to their physical environment, prioritizing action over planning.", cleanText: "They are seeking novel sensory experiences in the present moment and are highly adaptable to their physical environment, prioritizing action over planning.", value: "Se" }, { text: "They have an inner vision of a more exciting life and are making a decisive move to achieve that structured goal, even if it looks spontaneous.", cleanText: "They have an inner vision of a more exciting life and are making a decisive move to achieve that structured goal, even if it looks spontaneous.", value: "Ni" } ] },
+                { scenario: "A stoic soldier is known for his incredible, almost supernatural, speed and reactivity in combat. He makes split-second decisions based on the immediate physical environment, not a grand strategy.", options: [ { text: "His combat prowess comes from a mastery of the physical world and reacting to the present moment. He is not following a grand plan.", cleanText: "His combat prowess comes from a mastery of the physical world and reacting to the present moment. He is not following a grand plan.", value: "Se" }, { text: "His combat skill is the result of a long-term, perfected vision of battle. His actions are the result of a pre-determined internal structure, not just reaction.", cleanText: "His combat skill is the result of a long-term, perfected vision of battle. His actions are the result of a pre-determined internal structure, not just reaction.", value: "Ni" } ] },
+                { scenario: "When approaching a complex problem, what is your preferred first step?", options: [ { text: "To step back and try to grasp the entire system at once, looking for a single, underlying pattern or future implication.", cleanText: "To step back and try to grasp the entire system at once, looking for a single, underlying pattern or future implication.", value: "Ni" }, { text: "To engage with the problem directly and hands-on, gathering real-time data and reacting to what is immediately in front of you.", cleanText: "To engage with the problem directly and hands-on, gathering real-time data and reacting to what is immediately in front of you.", value: "Se" } ] },
+                { scenario: "A skilled craftsman is completely absorbed in their work, paying meticulous attention to the texture of the wood, the feel of the tools, and the physical quality of their creation. They are grounded in the here-and-now of their craft.", options: [ { text: "Their focus is entirely on the tangible, sensory details of the present moment. They are a master of the concrete world.", cleanText: "Their focus is entirely on the tangible, sensory details of the present moment. They are a master of the concrete world.", value: "Se" }, { text: "Their craft is a way of bringing an abstract, internal vision into reality. The physical details are just the medium for their conceptual idea.", cleanText: "Their craft is a way of bringing an abstract, internal vision into reality. The physical details are just the medium for their conceptual idea.", value: "Ni" } ] },
+            ]
+        },
 
         // --- STATE MANAGEMENT ---
-        let currentQuestionIndex = 0;
-        let scores = {}; // Will be initialized in startTest
-        let finalMbtiType = "";
-        let questionsForTest = [];
-        let hideFunctions = false;
+        state: {
+            currentQuestionIndex: 0,
+            scores: {},
+            questionsForTest: [],
+            hideFunctions: true,
+            userResponses: {}
+        },
+        resultChart: null,
 
-        // --- DOM ELEMENTS ---
-        const welcomeScreen = document.getElementById('welcome-screen');
-        const questionScreen = document.getElementById('question-screen');
-        const characterInputScreen = document.getElementById('character-input-screen');
-        const resultScreen = document.getElementById('result-screen');
-        const startBtn = document.getElementById('start-btn');
-        const testLengthSlider = document.getElementById('test-length-slider');
-        const testLengthLabel = document.getElementById('test-length-label');
-        const estimatedTime = document.getElementById('estimated-time');
-        const hideFunctionsToggle = document.getElementById('hide-functions-toggle');
-        const toggleLabelOff = document.getElementById('toggle-label-off');
-        const toggleLabelOn = document.getElementById('toggle-label-on');
-        const getResultsBtn = document.getElementById('get-results-btn');
-        const restartBtn = document.getElementById('restart-btn');
-        const scenarioText = document.getElementById('scenario-text');
-        const optionsContainer = document.getElementById('options-container');
-        const progressBar = document.getElementById('progress');
+        // --- DOM ELEMENTS CACHE ---
+        dom: {},
 
-        // --- CORE LOGIC ---
+        // --- INITIALIZATION ---
+        init() {
+            this.cacheDom();
+            this.addEventListeners();
+            this.updateSliderLabel();
+            this.updateToggleLabels();
+            this.checkForSavedState();
+        },
 
-        function updateSliderLabel() {
-            const numQuestions = testLengthSlider.value;
-            testLengthLabel.textContent = `${numQuestions} Questions`;
-            // Calculate estimated time (approx. 35 seconds per question)
-            const totalSeconds = numQuestions * 35;
-            const minutes = Math.floor(totalSeconds / 60);
-            const seconds = totalSeconds % 60;
-            if (minutes > 0) {
-                 estimatedTime.textContent = `~${minutes} min`;
-            } else {
-                 estimatedTime.textContent = `~${seconds} sec`;
+        cacheDom() {
+            this.dom.welcomeScreen = document.getElementById('welcome-screen');
+            this.dom.questionScreen = document.getElementById('question-screen');
+            this.dom.characterInputScreen = document.getElementById('character-input-screen');
+            this.dom.resultScreen = document.getElementById('result-screen');
+            this.dom.startBtn = document.getElementById('start-btn');
+            this.dom.resumeBtn = document.getElementById('resume-btn');
+            this.dom.testLengthSlider = document.getElementById('test-length-slider');
+            this.dom.testLengthLabel = document.getElementById('test-length-label');
+            this.dom.estimatedTime = document.getElementById('estimated-time');
+            this.dom.hideFunctionsToggle = document.getElementById('hide-functions-toggle');
+            this.dom.toggleLabelOff = document.getElementById('toggle-label-off');
+            this.dom.toggleLabelOn = document.getElementById('toggle-label-on');
+            this.dom.getResultsBtn = document.getElementById('get-results-btn');
+            this.dom.restartBtn = document.getElementById('restart-btn');
+            this.dom.shareBtn = document.getElementById('share-btn');
+            this.dom.scenarioText = document.getElementById('scenario-text');
+            this.dom.optionsContainer = document.getElementById('options-container');
+            this.dom.progress = document.getElementById('progress');
+            this.dom.questionCounter = document.getElementById('question-counter');
+            this.dom.resultChartCanvas = document.getElementById('resultChart');
+            this.dom.toast = document.getElementById('toast');
+        },
+
+        addEventListeners() {
+            this.dom.testLengthSlider.addEventListener('input', () => this.updateSliderLabel());
+            this.dom.hideFunctionsToggle.addEventListener('change', () => this.updateToggleLabels());
+            this.dom.startBtn.addEventListener('click', () => this.startTest());
+            this.dom.resumeBtn.addEventListener('click', () => this.resumeTest());
+            this.dom.getResultsBtn.addEventListener('click', () => this.calculateAndShowResult());
+            this.dom.restartBtn.addEventListener('click', () => this.restartTest());
+            this.dom.shareBtn.addEventListener('click', () => this.shareResults());
+        },
+        
+        // --- NEW: STATE PERSISTENCE ---
+        saveState() {
+            localStorage.setItem('mbtiTestState', JSON.stringify(this.state));
+        },
+
+        loadState() {
+            const savedState = localStorage.getItem('mbtiTestState');
+            if (savedState) {
+                this.state = JSON.parse(savedState);
+                return true;
             }
-        }
+            return false;
+        },
 
-        function updateToggleLabels() {
-            if (hideFunctionsToggle.checked) {
-                toggleLabelOn.classList.remove('opacity-50');
-                toggleLabelOff.classList.add('opacity-50');
-            } else {
-                toggleLabelOff.classList.remove('opacity-50');
-                toggleLabelOn.classList.add('opacity-50');
+        checkForSavedState() {
+            if (localStorage.getItem('mbtiTestState')) {
+                this.dom.resumeBtn.classList.remove('hidden');
             }
-        }
+        },
+        
+        clearState() {
+            localStorage.removeItem('mbtiTestState');
+            this.dom.resumeBtn.classList.add('hidden');
+        },
 
-        function startTest() {
-            const testLength = parseInt(testLengthSlider.value);
-            hideFunctions = hideFunctionsToggle.checked;
-            
-            // Shuffle and slice the questions to the desired length
-            questionsForTest = allQuestions.sort(() => 0.5 - Math.random()).slice(0, testLength);
+        // --- UI & DISPLAY LOGIC ---
+        updateSliderLabel() {
+            const numQuestions = this.dom.testLengthSlider.value;
+            this.dom.testLengthLabel.textContent = `${numQuestions} Questions`;
+            const minutes = Math.round((numQuestions * 35) / 60);
+            this.dom.estimatedTime.textContent = `~${minutes} min`;
+        },
 
-            currentQuestionIndex = 0;
-            // Initialize scores for all 8 functions
-            scores = { Te: 0, Ti: 0, Fe: 0, Fi: 0, Ne: 0, Ni: 0, Se: 0, Si: 0 };
-            finalMbtiType = "";
+        updateToggleLabels() {
+            const isChecked = this.dom.hideFunctionsToggle.checked;
+            this.state.hideFunctions = isChecked;
+            this.dom.toggleLabelOn.classList.toggle('opacity-50', !isChecked);
+            this.dom.toggleLabelOff.classList.toggle('opacity-50', isChecked);
+        },
 
-            welcomeScreen.classList.add('hidden');
-            resultScreen.classList.add('hidden');
-            characterInputScreen.classList.add('hidden');
-            questionScreen.classList.remove('hidden');
-            displayQuestion();
-        }
-
-        function displayQuestion() {
-            if (currentQuestionIndex < questionsForTest.length) {
-                const question = questionsForTest[currentQuestionIndex];
-                scenarioText.textContent = question.scenario;
-                optionsContainer.innerHTML = '';
-                
-                question.options.forEach(option => {
-                    const button = document.createElement('button');
-                    if (hideFunctions) {
-                        button.textContent = option.cleanText;
-                    } else {
-                        button.innerHTML = `<span class="font-bold text-green-400">${option.value}:</span> ${option.text}`;
-                    }
-                    button.classList.add('option-btn', 'text-white', 'font-semibold', 'rounded-lg', 'w-full');
-                    button.onclick = () => selectAnswer(option.value);
-                    optionsContainer.appendChild(button);
-                });
-
-                const progressPercentage = ((currentQuestionIndex) / questionsForTest.length) * 100;
-                progressBar.style.width = `${progressPercentage}%`;
-            } else {
-                questionScreen.classList.add('hidden');
-                characterInputScreen.classList.remove('hidden');
-            }
-        }
-
-        function selectAnswer(value) {
-            // This logic scores based on the chosen cognitive functions
-            const functions = value.match(/[A-Z][a-z]/g) || []; // Extracts ['Ne', 'Ti', 'Fe', 'Si']
-            functions.forEach(func => {
-                if (scores.hasOwnProperty(func)) {
-                    scores[func]++;
+        // NEW: Smooth screen transitions
+        transitionTo(screenElement) {
+            const screens = [this.dom.welcomeScreen, this.dom.questionScreen, this.dom.characterInputScreen, this.dom.resultScreen];
+            screens.forEach(screen => {
+                if (screen !== screenElement) {
+                    screen.classList.add('fade-out');
+                    // Use a timeout to set display:none after fade out
+                    setTimeout(() => screen.classList.add('hidden'), 500);
                 }
             });
             
-            currentQuestionIndex++;
-            displayQuestion();
-        }
+            screenElement.classList.remove('hidden');
+            // Use a timeout to trigger the fade-in animation
+            setTimeout(() => screenElement.classList.remove('fade-out'), 10);
+        },
 
-        function calculateAndShowResult() {
-            // Sum up the dichotomies based on the 8 function scores
-            const I_score = scores.Ni + scores.Si + scores.Fi + scores.Ti;
-            const E_score = scores.Ne + scores.Se + scores.Fe + scores.Te;
-            const N_score = scores.Ni + scores.Ne;
-            const S_score = scores.Si + scores.Se;
-            const T_score = scores.Ti + scores.Te;
-            const F_score = scores.Fi + scores.Fe;
+        displayQuestion() {
+            if (this.state.currentQuestionIndex < this.state.questionsForTest.length) {
+                const question = this.state.questionsForTest[this.state.currentQuestionIndex];
+                this.dom.questionCounter.textContent = `${this.state.currentQuestionIndex + 1} of ${this.state.questionsForTest.length}`;
+                this.dom.scenarioText.textContent = question.scenario;
+                this.dom.optionsContainer.innerHTML = '';
+                
+                question.options.forEach(option => {
+                    const button = document.createElement('button');
+                    button.innerHTML = this.state.hideFunctions 
+                        ? option.cleanText 
+                        : `<span class="font-bold text-teal-400">${option.value}:</span> ${option.text}`;
+                    
+                    button.classList.add('option-btn', 'text-white', 'font-semibold');
+                    button.onclick = (e) => this.selectAnswer(option.value, e.currentTarget);
+                    this.dom.optionsContainer.appendChild(button);
+                });
 
-            // Determine the 4 letters
-            const attitude = I_score >= E_score ? 'I' : 'E';
-            const perceivingFunc = N_score > S_score ? 'N' : 'S';
-            const judgingFunc = T_score > F_score ? 'T' : 'F';
+                const progressPercentage = ((this.state.currentQuestionIndex) / this.state.questionsForTest.length) * 100;
+                this.dom.progress.style.width = `${progressPercentage}%`;
+                this.saveState();
+            } else {
+                this.transitionTo(this.dom.characterInputScreen);
+            }
+        },
 
-            // Determine J/P based on the most common heuristic for function stacks
-            const J_score = scores.Te + scores.Fe + scores.Ni + scores.Si;
-            const P_score = scores.Ne + scores.Se + scores.Ti + scores.Fi;
-            const j_p = J_score >= P_score ? 'J' : 'P';
-
-            finalMbtiType = `${attitude}${perceivingFunc}${judgingFunc}${j_p}`;
+        // --- CORE TEST LOGIC ---
+        startTest(isResuming = false) {
+            if (!isResuming) {
+                const testLength = parseInt(this.dom.testLengthSlider.value);
+                const questionsPerCategory = testLength / 4;
+                let selectedQuestions = [];
+                for (const category in this.questionBank) {
+                    const shuffled = this.questionBank[category].sort(() => 0.5 - Math.random());
+                    selectedQuestions.push(...shuffled.slice(0, questionsPerCategory));
+                }
+                
+                this.state.questionsForTest = selectedQuestions.sort(() => 0.5 - Math.random());
+                this.state.currentQuestionIndex = 0;
+                this.state.scores = { Te: 0, Ti: 0, Fe: 0, Fi: 0, Ne: 0, Ni: 0, Se: 0, Si: 0 };
+                this.state.userResponses = {};
+            }
             
-            // Final check to ensure the type is valid
-            if (!mbtiInfo[finalMbtiType]) {
-                finalMbtiType = "INFP"; // A safe default
+            this.transitionTo(this.dom.questionScreen);
+            this.displayQuestion();
+        },
+
+        resumeTest() {
+            if (this.loadState()) {
+                this.startTest(true);
+            }
+        },
+        
+        restartTest() {
+            this.clearState();
+            this.transitionTo(this.dom.welcomeScreen);
+        },
+
+        selectAnswer(value, buttonElement) {
+            // NEW: Visual feedback on selection
+            buttonElement.classList.add('selected');
+            
+            // Disable buttons to prevent multi-click
+            Array.from(this.dom.optionsContainer.children).forEach(btn => btn.disabled = true);
+
+            if (this.state.scores.hasOwnProperty(value)) {
+                this.state.scores[value]++;
             }
 
-            characterInputScreen.classList.add('hidden');
-            resultScreen.classList.remove('hidden');
+            setTimeout(() => {
+                this.state.currentQuestionIndex++;
+                this.displayQuestion();
+            }, 500); // Wait for feedback animation
+        },
+
+        calculateAndShowResult() {
+            const favChar = document.getElementById('fav-char').value;
+            const relChar = document.getElementById('rel-char').value;
+
+            const preferredFunctions = {
+                TeFi: this.state.scores.Te >= this.state.scores.Fi ? 'Te' : 'Fi',
+                FeTi: this.state.scores.Fe >= this.state.scores.Ti ? 'Fe' : 'Ti',
+                NeSi: this.state.scores.Ne >= this.state.scores.Si ? 'Ne' : 'Si',
+                NiSe: this.state.scores.Ni >= this.state.scores.Se ? 'Ni' : 'Se'
+            };
+
+            const functionToPair = { 'Te': 'TeFi', 'Fi': 'TeFi', 'Fe': 'FeTi', 'Ti': 'FeTi', 'Ne': 'NeSi', 'Si': 'NeSi', 'Ni': 'NiSe', 'Se': 'NiSe' };
+
+            let rawTypeScores = Object.entries(this.mbtiInfo).map(([type, { stack }]) => {
+                let score = 0;
+                if (stack.includes(preferredFunctions.TeFi)) score += 4;
+                if (stack.includes(preferredFunctions.FeTi)) score += 4;
+                if (stack.includes(preferredFunctions.NeSi)) score += 4;
+                if (stack.includes(preferredFunctions.NiSe)) score += 4;
+                if (stack[0] === preferredFunctions[functionToPair[stack[0]]]) score += 2;
+                if (stack[1] === preferredFunctions[functionToPair[stack[1]]]) score += 1;
+                return { type, score };
+            });
+            
+            const maxScore = Math.max(...rawTypeScores.map(item => item.score));
+            const finalTypeScores = rawTypeScores.map(item => ({ type: item.type, score: (item.score / maxScore) * 100 })).sort((a, b) => b.score - a.score);
+
+            const finalMbtiType = finalTypeScores[0].type;
+            this.state.userResponses = {
+                finalType: finalMbtiType,
+                top5Types: finalTypeScores.slice(0, 5).map(item => `${item.type} (${item.score.toFixed(0)}%)`).join(', '),
+                favChar,
+                relChar,
+                scores: JSON.stringify(this.state.scores)
+            };
+
+            this.transitionTo(this.dom.resultScreen);
             
             document.getElementById('mbti-type').textContent = finalMbtiType;
-            document.getElementById('mbti-title').textContent = mbtiInfo[finalMbtiType].title;
-            document.getElementById('mbti-justification').textContent = `Your choices indicate a preference for ${attitude === 'I' ? 'Introversion' : 'Extraversion'}, ${perceivingFunc === 'N' ? 'Intuition' : 'Sensing'}, and ${judgingFunc === 'T' ? 'Thinking' : 'Feeling'}.`;
-        }
+            document.getElementById('mbti-title').textContent = this.mbtiInfo[finalMbtiType].title;
+            
+            const confidence = finalTypeScores[0].score - (finalTypeScores[1]?.score || 0);
+            const confidencePercentage = Math.min(100, Math.max(10, confidence * 4));
+            document.getElementById('confidence-bar').style.width = `${confidencePercentage}%`;
+            document.getElementById('confidence-text').textContent = confidencePercentage > 75 ? 'Very High' : confidencePercentage > 50 ? 'High' : 'Moderate';
+
+            this.displayResultChart(finalTypeScores.slice(0, 5));
+            this.displayFunctionScores(this.state.scores);
+            this.updateGoogleFormLink();
+            this.clearState();
+        },
+
+        // --- RESULTS DISPLAY & SHARING ---
+        displayResultChart(topTypes) {
+            if (this.resultChart) this.resultChart.destroy();
+            const ctx = this.dom.resultChartCanvas.getContext('2d');
+            this.resultChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: topTypes.map(item => item.type),
+                    datasets: [{
+                        label: 'Alignment Score',
+                        data: topTypes.map(item => item.score),
+                        backgroundColor: ['rgba(45, 212, 191, 0.8)', 'rgba(59, 130, 246, 0.6)', 'rgba(59, 130, 246, 0.5)', 'rgba(59, 130, 246, 0.4)', 'rgba(59, 130, 246, 0.3)'],
+                        borderColor: ['#2dd4bf', '#3b82f6', '#3b82f6', '#3b82f6', '#3b82f6'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    scales: {
+                        x: { beginAtZero: true, max: 100, ticks: { color: '#8b949e' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } },
+                        y: { ticks: { color: '#e6edf3', font: { size: 14, weight: 'bold' } }, grid: { display: false } }
+                    },
+                    plugins: { legend: { display: false }, tooltip: { callbacks: { label: (context) => ` Alignment: ${context.raw.toFixed(0)}%` } } }
+                }
+            });
+        },
+
+        displayFunctionScores(scores) {
+            const container = document.getElementById('function-scores');
+            container.innerHTML = '';
+            const functionOrder = ['Te', 'Ti', 'Fe', 'Fi', 'Ne', 'Ni', 'Se', 'Si'];
+            const functionColors = { Te: 'text-red-400', Ti: 'text-red-300', Fe: 'text-teal-400', Fi: 'text-teal-300', Ne: 'text-sky-400', Ni: 'text-sky-300', Se: 'text-amber-400', Si: 'text-amber-300' };
+            functionOrder.forEach(func => {
+                container.innerHTML += `
+                    <div class="bg-gray-800 p-3 rounded-lg text-center">
+                        <p class="font-bold text-lg ${functionColors[func]}">${func}</p>
+                        <p class="text-2xl font-bold">${scores[func]}</p>
+                    </div>`;
+            });
+        },
         
-        // --- EVENT LISTENERS ---
-        testLengthSlider.addEventListener('input', updateSliderLabel);
-        hideFunctionsToggle.addEventListener('change', updateToggleLabels);
-        startBtn.addEventListener('click', startTest);
-        getResultsBtn.addEventListener('click', calculateAndShowResult);
-        restartBtn.addEventListener('click', () => {
-             resultScreen.classList.add('hidden');
-             welcomeScreen.classList.remove('hidden');
-        });
+        updateGoogleFormLink() {
+            // IMPORTANT: Replace these with your actual Form ID and Entry IDs
+            const formURL = "https://docs.google.com/forms/d/e/YOUR_FORM_ID_HERE/viewform";
+            const entryMap = {
+                finalType: "entry.XXXXXXXXXX", top5Types: "entry.XXXXXXXXXX",
+                favChar: "entry.XXXXXXXXXX", relChar: "entry.XXXXXXXXXX",
+                scores: "entry.XXXXXXXXXX"
+            };
+            const params = new URLSearchParams();
+            for (const key in this.state.userResponses) {
+                if (entryMap[key]) params.append(entryMap[key], this.state.userResponses[key]);
+            }
+            document.getElementById('get-detailed-report-btn').href = `${formURL}?${params.toString()}`;
+        },
+        
+        shareResults() {
+            const resultText = `I took the Cognitive Analyst Test and my type is ${this.state.userResponses.finalType}! My top alignments are: ${this.state.userResponses.top5Types}. Find out your type here: ${window.location.href}`;
+            navigator.clipboard.writeText(resultText).then(() => {
+                this.dom.toast.classList.remove('opacity-0');
+                setTimeout(() => {
+                    this.dom.toast.classList.add('opacity-0');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        }
+    };
 
-        // Initialize
-        updateSliderLabel();
-        updateToggleLabels();
-
+    // Initialize the app when the DOM is ready
+    document.addEventListener('DOMContentLoaded', () => mbtiTestApp.init());
     </script>
 </body>
-</ht
+</html>
